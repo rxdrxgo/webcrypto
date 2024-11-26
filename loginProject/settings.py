@@ -77,13 +77,18 @@ WSGI_APPLICATION = 'loginProject.wsgi.application'
 import pymysql
 pymysql.install_as_MySQLdb()
 
-
+PASSWORD = 'admin101'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'loginDB',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'rds_aws_mysql',
+        'USER': 'admin',
+        'PASSWORD': PASSWORD,
+        'HOST': 'database-1.cncrblnkt1ng.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'ssl': {'ssl_disabled': True }
+        }
     }
 }
 

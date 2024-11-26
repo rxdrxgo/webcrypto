@@ -1,0 +1,132 @@
+{% extends "base/base.html" %}
+{% load humanize %}
+{% block titulo %}
+    Inicio
+{% endblock %}
+
+{% block contenido %}
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4 display-4">Criptomonedas más populares</h1>
+
+
+                        <!-- Search -->
+<div class="col-4 mb-4 d-flex justify-content-center offset-4 d-grid">
+    <form method="get" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search w-100">
+        <div class="input-group w-100">
+            <input type="text" name="search" class="form-control small" placeholder="Search for..." value="{{ search_query }}" aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+        <div class="table-responsive">
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Símbolo</th>
+                        <th>Precio (USD)</th>
+                        <th>Cap. de Mercado</th>
+                        <th>24H</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for crypto in page_obj %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <img src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">
+                                {{ crypto.name }}
+                            </td>
+                            <td>{{ crypto.symbol | upper }}</td>
+                            <td>${{ crypto.current_price | floatformat:2 }}</td>
+                            <td>${{ crypto.market_cap | intcomma }}</td>
+                            <td class="{{ crypto.price_change_color }}">{{ crypto.price_change_percentage_24h | floatformat:3 }}%</td>
+
+                            </tr>
+                                {% empty %}
+                            <tr>
+                            <td colspan="4">No se encontraron resultados.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+            <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+
+
+
+
+<!-- Página anterior -->
+{% if page_obj.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="?page=1" aria-label="First">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+        </a>
+    </li>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </li>
+{% else %}
+    <li class="page-item disabled">
+        <span class="page-link">&laquo;&laquo;</span>
+    </li>
+    <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+    </li>
+{% endif %}
+
+<!-- Páginas intermedias -->
+{% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">{{ num }}</span>
+        </li>
+    {% else %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+    {% endif %}
+{% endfor %}
+
+<!-- Página siguiente -->
+{% if page_obj.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </li>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+        </a>
+    </li>
+{% else %}
+    <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+    </li>
+    <li class="page-item disabled">
+        <span class="page-link">&raquo;&raquo;</span>
+    </li>
+{% endif %}
+
+
+{% endblock %}

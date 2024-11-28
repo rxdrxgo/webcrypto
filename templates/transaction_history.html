@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+{% block contenido %}
+<table>
+    <thead>
+        <tr>
+            <th>Criptomoneda</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Tipo de transacción</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.crypto.name }}</td>
+            <td>{{ transaction.quantity }}</td>
+            <td>{{ transaction.price_at_time }}</td>
+            <td>{{ transaction.transaction_type }}</td>
+            <td>{{ transaction.date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

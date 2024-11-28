@@ -1,0 +1,46 @@
+{% extends "base/base.html" %}
+{% load humanize %}
+{% block contenido %}
+
+<div class="container mt-5">
+
+<div class="display-4 text-center my-5">Mis Favoritos</div>
+
+
+{% if favorite_cryptos %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Símbolo</th>
+                <th>Precio (USD)</th>
+                <th>Cap. de Mercado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for crypto in favorite_cryptos %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <img src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">
+                        {{ crypto.name }}
+                    </td>
+                    <td>{{ crypto.symbol | upper }}</td>
+                    <td>${{ crypto.current_price | floatformat:2 }}</td>
+                    <td>${{ crypto.market_cap | intcomma }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <h3 class="text-center mt-5 p-5">No tienes criptomonedas favoritas.</h3>
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-secondary btn-sm">Agregar monedas</a>
+    </div>
+{% endif %}
+
+
+</div>
+
+{% endblock %}

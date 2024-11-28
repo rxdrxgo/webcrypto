@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+{% block contenido %}
+
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="quantity">Nueva cantidad:</label>
+    <input type="number" name="quantity" value="{{ portafolio_item.quantity }}" step="any" required>
+    <button type="submit">Actualizar</button>
+</form>
+
+{% endblock %}

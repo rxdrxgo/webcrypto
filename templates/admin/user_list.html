@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+
+{% block contenido %}
+    <div class="display-3 text-center">Lista de Usuarios</div>
+    <div class="container my-3">
+
+    <!-- Tabla de usuarios -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Correo Electrónico</th>
+                <th>Fecha de Creación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.date_joined }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+
+{% endblock %}

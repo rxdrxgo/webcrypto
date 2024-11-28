@@ -1,0 +1,100 @@
+{% extends 'base/base.html' %}
+{% load humanize %}
+
+{% block contenido %}
+
+    <div class="container mt-4">
+
+
+        <div class="display-3 text-center mb-5">Tu Portafolio</div>
+        <div class="text-center my-3"><a href="{% url 'add_to_portafolio' %}" class="btn btn-primary btn-sm">Agregar moneda</a></div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+<thead>
+        <tr>
+            <th>Criptomoneda</th>
+            <th>Cantidad</th>
+            <th>Valor Actual</th>
+            <th>Ganancia/Pérdida</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in portfolio %}
+            <tr>
+                <td><img src="{{ item.crypto.image_url }}" alt="{{ item.crypto.name }}" width="30">{{ item.crypto.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.current_value }}</td>
+                <td class="{% if item.profit_loss >= 0 %}text-success{% else %}text-danger{% endif %}">${{ item.profit_loss }}</td>
+
+
+        <!-- Botones de Comprar y Vender -->
+        <td>
+            <a href="#" data-toggle="modal" data-target="#comprarModal{{ item.id }}" class="btn btn-success btn-sm">Comprar</a>
+            <a href="#" data-toggle="modal" data-target="#venderModal{{ item.id }}" class="btn btn-danger btn-sm">Vender</a>
+        </td>
+    </tr>
+
+    <!-- Modal de Comprar -->
+    <div class="modal fade" id="comprarModal{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="comprarModalLabel{{ item.id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="comprarModalLabel{{ item.id }}">Comprar {{ item.crypto.name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'comprar_portafolio' portafolio_id=item.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <label for="cantidad_comprada">Cantidad a comprar:</label>
+                        <input type="number" name="cantidad_comprada" id="cantidad_comprada" class="form-control" step="any" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Comprar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Vender -->
+    <div class="modal fade" id="venderModal{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="venderModalLabel{{ item.id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="venderModalLabel{{ item.id }}">Vender {{ item.crypto.name }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'vender_portafolio' portafolio_id=item.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <label for="cantidad_vendida">Cantidad a vender:</label>
+                        <input type="number" name="cantidad_vendida" id="cantidad_vendida" class="form-control" step="any" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-danger">Vender</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+
+    </tbody>
+</table>
+    </div>
+
+
+<!-- Historial de Transacciones -->
+
+
+
+</div>
+{% endblock %}

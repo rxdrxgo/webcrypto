@@ -1,13 +1,11 @@
 {% extends "base/base.html" %}
 {% load humanize %}
-{% block titulo %}
-    Inicio
-{% endblock %}
 
 {% block contenido %}
 
     <div class="container mt-5">
         <h1 class="text-center mb-4 display-4">Criptomonedas más populares</h1>
+    
 
 
                         <!-- Search -->
@@ -28,44 +26,47 @@
 
 
 
-        <div class="table-responsive">
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Símbolo</th>
+                <th>Precio (USD)</th>
+                <th>Cap. de Mercado</th>
+                <th>24H</th>
+                <th>Favorito</th>  <!-- Nueva columna para el botón de favoritos -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for crypto in page_obj %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td><img src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">{{ crypto.name }}</td>
+                    <td>{{ crypto.symbol | upper }}</td>
+                    <td>${{ crypto.current_price | floatformat:2 }}</td>
+                    <td>${{ crypto.market_cap | intcomma }}</td>
+                    <td class="{{ crypto.price_change_color }}">{{ crypto.price_change_percentage_24h | floatformat:3 }}%</td>
+                    <td>
+                        {% if crypto.symbol %}
+                            {% if crypto.symbol in user_favorites %}
+                                <a href="{% url 'remove_from_favorites' crypto.symbol %}" class="btn btn-danger btn-sm">Quitar de favoritos</a>
+                            {% else %}
+                                <a href="{% url 'add_to_favorites' crypto.symbol %}" class="btn btn-success btn-sm">Agregar a favoritos</a>
+                            {% endif %}
+                        {% else %}
+                            <span>No disponible</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Símbolo</th>
-                        <th>Precio (USD)</th>
-                        <th>Cap. de Mercado</th>
-                        <th>24H</th>
 
 
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% for crypto in page_obj %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <img src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">
-                                {{ crypto.name }}
-                            </td>
-                            <td>{{ crypto.symbol | upper }}</td>
-                            <td>${{ crypto.current_price | floatformat:2 }}</td>
-                            <td>${{ crypto.market_cap | intcomma }}</td>
-                            <td class="{{ crypto.price_change_color }}">{{ crypto.price_change_percentage_24h | floatformat:3 }}%</td>
-
-                            </tr>
-                                {% empty %}
-                            <tr>
-                            <td colspan="4">No se encontraron resultados.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
 
             <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">

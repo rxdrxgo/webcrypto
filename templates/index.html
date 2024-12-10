@@ -5,7 +5,6 @@
 
     <div class="container mt-5">
         <h1 class="text-center mb-4 display-4">Criptomonedas más populares</h1>
-    
 
 
                         <!-- Search -->
@@ -36,24 +35,24 @@
                 <th>Precio (USD)</th>
                 <th>Cap. de Mercado</th>
                 <th>24H</th>
-                <th>Favorito</th>  <!-- Nueva columna para el botón de favoritos -->
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for crypto in page_obj %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td><img src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">{{ crypto.name }}</td>
+                    <td><a class="nav-link" href="{% url 'crypto_details' crypto.crypto_id %}"><img class="me-2" src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="30">{{ crypto.name }}</a></td>
                     <td>{{ crypto.symbol | upper }}</td>
                     <td>${{ crypto.current_price | floatformat:2 }}</td>
                     <td>${{ crypto.market_cap | intcomma }}</td>
                     <td class="{{ crypto.price_change_color }}">{{ crypto.price_change_percentage_24h | floatformat:3 }}%</td>
                     <td>
-                        {% if crypto.symbol %}
+                        {% if crypto.crypto_id %}
                             {% if crypto.symbol in user_favorites %}
-                                <a href="{% url 'remove_from_favorites' crypto.symbol %}" class="btn btn-danger btn-sm">Quitar de favoritos</a>
+                                <a href="{% url 'remove_from_favorites' crypto.crypto_id %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-star-fill"></i></a>
                             {% else %}
-                                <a href="{% url 'add_to_favorites' crypto.symbol %}" class="btn btn-success btn-sm">Agregar a favoritos</a>
+                                <a href="{% url 'add_to_favorites' crypto.crypto_id %}" class="btn btn-outline-warning btn-sm"><i class="bi bi-star"></i></a>
                             {% endif %}
                         {% else %}
                             <span>No disponible</span>

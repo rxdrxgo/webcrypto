@@ -1,0 +1,135 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block contenido %}
+    <div class="container py-5">
+        <div class="text-center mb-4">
+            <h1 class="display-3">{{ crypto.name }} <strong>({{ crypto.symbol | upper }})</strong></h1>
+            <img class="img-fluid rounded-circle" src="{{ crypto.image_url }}" alt="{{ crypto.name }}" width="150">
+        </div>
+
+        <div class="row">
+
+            <div class="col-12 mb-4 d-inline-flex justify-content-center">
+
+                                        <ul class="list-unstyled">
+                            {% if twitter %}
+                                <li class="nav-item"><a href="https://twitter.com/{{ twitter }}" target="_blank"><strong><i class="bi bi-twitter"></i> Twitter</strong></a></li>
+                            {% endif %}
+                            {% if reddit %}
+                                <li class="nav-item"><a href="https://www.reddit.com/r/{{ reddit }}" target="_blank"><strong><i class="bi bi-reddit"></i> Reddit</strong> </a></li>
+                            {% endif %}
+                            {% if github_url %}
+                                <li class="nav-item"><a href="{{ github_url }}" target="_blank"><strong><i class="bi bi-github"></i> Github</strong></a></li>
+                            {% endif %}
+                            {% if website %}
+                                <li class="nav-item"><a href="{{ website }}" target="_blank"><strong><i class="bi bi-link-45deg"></i> {{ website }}</strong></a></li>
+                            {% endif %}
+                        </ul>
+            </div>
+
+                <div class="my-5 fs-4">{{ description }}</div>
+
+            <!-- Información general de la moneda -->
+            <div class="col-md-6 mb-4">
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <strong>Detalles</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Precio actual:</strong> <span class="text-primary">${{ current_price | floatformat:2 }}</span></li>
+                            <li><strong>Ranking de mercado:</strong> {{ market_cap_rank }}</li>
+                            <li><strong>Cap. de mercado:</strong> ${{ market_cap | intcomma }}</li>
+                            <li><strong>Volumen 24H:</strong> ${{ total_volume | intcomma }}</li>
+                            <li><strong>Cambio en 24 horas:</strong> 
+                                <span class="{% if price_change_percentage_24h > 0 %}badge rounded-pill text-bg-success fs-6{% else %}badge rounded-pill text-bg-danger fs-6{% endif %}">
+                                    {{ price_change_percentage_24h | floatformat:2 }}%
+                                </span>
+                            </li>                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos del Supply -->
+            <div class="col-md-6 mb-4">
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <strong>Datos del Suministro</strong>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Suministro máximo:</strong> {{ max_supply | intcomma }}</li>
+                            <li><strong>Suministro circulante:</strong> {{ circulating_supply | intcomma }}</li>
+                            <li><strong>Suministro total:</strong> {{ total_supply | intcomma }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        <!-- Tabla de Mercados (DataTable) -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <strong>Mercados</strong>
+            </div>
+            <div class="card-body">
+                <table id="marketTable" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Exchange</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for market in markets_page %}
+                            <tr>
+                                <td><strong>{{ market.exchange }}</strong><a class="badge rounded-pill text-bg-success ms-5 p-2" href="{{ market.url }}" >Comprar</a></td>
+                                <td>${{ market.price | floatformat:8 }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3">No hay mercados disponibles</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div class="pagination text-center">
+                    <span class="step-links">
+                        {% if markets_page.has_previous %}
+                            <a class="btn btn-outline-primary btn-sm" href="?page=1">&laquo; Primera</a>
+                            <a class="btn btn-outline-primary btn-sm" href="?page={{ markets_page.previous_page_number }}">Anterior</a>
+                        {% endif %}
+
+                        <span class="current mx-3">
+                            Página {{ markets_page.number }} de {{ markets_page.paginator.num_pages }}.
+                        </span>
+
+                        {% if markets_page.has_next %}
+                            <a class="btn btn-outline-primary btn-sm" href="?page={{ markets_page.next_page_number }}">Siguiente</a>
+                            <a class="btn btn-outline-primary btn-sm" href="?page={{ markets_page.paginator.num_pages }}">Última &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Script para inicializar DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#marketTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "lengthMenu": [10, 25, 50, 100],
+                "pageLength": 10
+            });
+        });
+    </script>
+{% endblock %}

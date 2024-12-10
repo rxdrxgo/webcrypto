@@ -6,12 +6,15 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Crypto(models.Model):
-    symbol = models.CharField(max_length=10, unique=True)  # Hacemos que el symbol sea único
     name = models.CharField(max_length=100)
-    current_price = models.DecimalField(max_digits=20, decimal_places=2)
+    symbol = models.CharField(max_length=10)
+    crypto_id = models.CharField(max_length=100, unique=True)  # ID único para la criptomoneda en CoinGecko
+    current_price = models.DecimalField(max_digits=20, decimal_places=8)
+    price_change_percentage_24h = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)  # Cambio en % en las últimas 24 horas
+    image_url = models.URLField(null=True, blank=True)
     market_cap = models.BigIntegerField()
-    image_url = models.URLField(null=True, blank=True)  # Permite valores nulos y en blanco
-    initial_price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)  # Precio inicial
+    initial_price = models.DecimalField(max_digits=20, decimal_places=8, default=0, blank=True)  # Precio inicial (puede ser nulo)
+
 
     def __str__(self):
         return self.name
